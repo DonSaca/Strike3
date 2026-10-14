@@ -1,0 +1,28 @@
+X | X | X
+  |   |  
+O | O | O
+Player X has three black pieces (⚫) in the top row.
+Player O has three white pieces (⚪) in the bottom row.
+The middle row is empty.
+How to Play
+Turns:
+Players take turns, starting with Player X.
+The current player’s turn is indicated at the top of the screen (e.g., "Player X’s Turn").
+Moving Pieces:
+Click one of your pieces to select it (it turns yellow).
+Valid moves (adjacent empty cells) are highlighted in light green.
+Click a highlighted cell to move your piece there. The original cell becomes empty.
+Valid moves are based on adjacency (horizontal, vertical, or diagonal). For example:
+From cell 0 (top-left), you can move to 1, 3, or 4.
+From cell 4 (center), you can move to any surrounding cell (0, 1, 2, 3, 5, 6, 7, 8).
+Winning the Game:
+The first player to align three of their pieces in one of these patterns wins:
+Diagonal: [0, 4, 8] (top-left to bottom-right) or [2, 4, 6] (top-right to bottom-left).
+Middle Row: [3, 4, 5] (horizontal).
+Middle Column: [1, 4, 7] (vertical).
+Winning cells are highlighted in green with a strikethrough on the pieces, like Tic-Tac-Toe.
+Restarting:
+After a win, a "Restart Game" button appears.
+Clicking it resets the board to the initial state, keeping the same players, and starts a new game with Player X’s turn.
+Objective
+Move your pieces strategically to form a winning pattern while preventing your opponent from doing the same.
