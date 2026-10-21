@@ -1,4 +1,4 @@
-import { getAllValidMoves } from './boardGeometry';
+import { getAllValidMoves, WINNING_LINES } from './boardGeometry';
 
 export type Player = 'Black' | 'White';
 export type CellValue = Player | null;
@@ -17,15 +17,8 @@ export const INITIAL_BOARD: CellValue[] = [
   'White', 'White', 'White'
 ];
 
-export const WINNING_PATTERNS: number[][] = [
-  [0, 4, 8],
-  [2, 4, 6],
-  [3, 4, 5],
-  [1, 4, 7],
-];
-
 export function checkWinner(board: CellValue[]): { winner: Player | null; winningNodes: number[] } {
-  for (const pattern of WINNING_PATTERNS) {
+  for (const pattern of WINNING_LINES) {
     const [a, b, c] = pattern;
     if (board[a] && board[a] === board[b] && board[b] === board[c]) {
       return { winner: board[a], winningNodes: pattern };

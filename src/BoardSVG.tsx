@@ -35,8 +35,8 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
         <defs>
           <linearGradient id="boardBgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#1a1f2e" />
-            <stop offset="48%" stopColor="#15203a" />
-            <stop offset="52%" stopColor="#3a1018" />
+            <stop offset="50%" stopColor="#15203a" />
+            <stop offset="50%" stopColor="#3a1018" />
             <stop offset="100%" stopColor="#2a0a12" />
           </linearGradient>
           
@@ -72,8 +72,8 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
           y={2}
           width={BOARD_WIDTH - 4}
           height={BOARD_HEIGHT - 4}
-          rx={24}
-          ry={24}
+          rx={0}
+          ry={0}
           fill="url(#boardBgGradient)"
           stroke="#2a2f3a"
           strokeWidth={1.5}
@@ -85,8 +85,8 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
           y={16}
           width={BOARD_WIDTH - 32}
           height={BOARD_HEIGHT - 32}
-          rx={16}
-          ry={16}
+          rx={0}
+          ry={0}
           fill="url(#centerGlowBlue)"
           pointerEvents="none"
         />
@@ -96,8 +96,8 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
           y={16}
           width={BOARD_WIDTH - 32}
           height={BOARD_HEIGHT - 32}
-          rx={16}
-          ry={16}
+          rx={0}
+          ry={0}
           fill="url(#centerGlowRed)"
           pointerEvents="none"
         />
