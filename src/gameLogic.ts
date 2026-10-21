@@ -1,12 +1,14 @@
+import { ADJACENCY } from './boardGeometry';
+
 export type Player = 'Black' | 'White';
 export type CellValue = Player | null;
 
 export interface GameState {
   board: CellValue[];
   currentPlayer: Player;
-  selectedCell: number | null;
+  selectedNode: number | null;
   winner: Player | null;
-  winningCells: number[];
+  winningNodes: number[];
 }
 
 export const INITIAL_BOARD: CellValue[] = [
@@ -22,41 +24,55 @@ export const WINNING_PATTERNS: number[][] = [
   [1, 4, 7],
 ];
 
-export const ADJACENT_CELLS: Record<number, number[]> = {
-  0: [1, 3, 4],
-  1: [0, 2, 3, 4, 5],
-  2: [1, 4, 5],
-  3: [0, 1, 4, 6, 7],
-  4: [0, 1, 2, 3, 5, 6, 7, 8],
-  5: [1, 2, 4, 7, 8],
-  6: [3, 4, 7],
-  7: [3, 4, 5, 6, 8],
-  8: [4, 5, 7],
-};
-
-export function checkWinner(board: CellValue[]): { winner: Player | null; winningCells: number[] } {
+export function checkWinner(board: CellValue[]): { winner: Player | null; winningNodes: number[] } {
   for (const pattern of WINNING_PATTERNS) {
     const [a, b, c] = pattern;
     if (board[a] && board[a] === board[b] && board[b] === board[c]) {
-      return { winner: board[a], winningCells: pattern };
+      return { winner: board[a], winningNodes: pattern };
     }
   }
-  return { winner: null, winningCells: [] };
+  return { winner: null, winningNodes: [] };
 }
 
-export function getValidMoves(board: CellValue[], cellIndex: number, player: Player): number[] {
-  const piece = board[cellIndex];
+export function getValidMoves(board: CellValue[], nodeIndex: number, player: Player): number[] {
+  const piece = board[nodeIndex];
   if (piece !== player) return [];
   
-  return ADJACENT_CELLS[cellIndex]?.filter(idx => board[idx] === null) || [];
+  return ADJACENCY[nodeIndex]?.filter(idx => board[idx] === null) || [];
 }
 
 export function createInitialState(): GameState {
   return {
     board: [...INITIAL_BOARD],
     currentPlayer: 'Black',
-    selectedCell: null,
+    selectedNode: null,
     winner: null,
-    winningCells: [],
+    winningNodes: [],
   };
+}
+
+export function makeMove(state: GameState, fromNode: number, toNode: number): GameState | null {
+  const { board, currentPlayer } = state;
+  
+  if (board[fromNode] !== currentPlayer) return null;
+  if (board[toNode] !== null) return null;
+  if (!ADJACENCY[fromNode]?.includes(toNode)) return null;
+  
+  const newBoard = [...board];
+  newBoard[toNode] = currentPlayer;
+  newBoard[fromNode] = null;
+  
+  const { winner, winningNodes } = checkWinner(newBoard);
+  
+  return {
+    board: newBoard,
+    currentPlayer: currentPlayer === 'Black' ? 'White' : 'Black',
+    selectedNode: null,
+    winner,
+    winningNodes,
+  };
+}
+
+export function isDraw(board: CellValue[]): boolean {
+  return !board.includes(null) && checkWinner(board).winner === null;
 }

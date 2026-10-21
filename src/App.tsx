@@ -1,114 +1,105 @@
-import { useState } from 'react';
-import { GameState, createInitialState, checkWinner } from './gameLogic';
-import { Board } from './Board';
+import { useState, useEffect, useCallback } from 'react';
+import { GameState, createInitialState, makeMove, isDraw } from './gameLogic';
+import { BoardSVG } from './BoardSVG';
 
 function App() {
   const [gameState, setGameState] = useState<GameState>(createInitialState);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
-  const handleCellClick = (index: number) => {
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mediaQuery.matches);
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
+  const handleNodeClick = useCallback((index: number) => {
     setGameState(prev => {
       if (prev.winner) return prev;
 
-      const { board, currentPlayer, selectedCell } = prev;
+      const { board, currentPlayer, selectedNode } = prev;
 
-      if (selectedCell === null) {
+      if (selectedNode === null) {
         if (board[index] === currentPlayer) {
-          return { ...prev, selectedCell: index };
+          return { ...prev, selectedNode: index };
         }
         return prev;
       }
 
-      if (selectedCell === index) {
-        return { ...prev, selectedCell: null };
+      if (selectedNode === index) {
+        return { ...prev, selectedNode: null };
       }
 
-      const validMoves = getValidMovesForPlayer(board, currentPlayer, selectedCell);
-      if (validMoves.includes(index)) {
-        const newBoard = [...board];
-        newBoard[index] = currentPlayer;
-        newBoard[selectedCell] = null;
-
-        const { winner, winningCells } = checkWinner(newBoard);
-        
-        return {
-          board: newBoard,
-          currentPlayer: currentPlayer === 'Black' ? 'White' : 'Black',
-          selectedCell: null,
-          winner,
-          winningCells,
-        };
+      const newState = makeMove(prev, selectedNode, index);
+      if (newState) {
+        return newState;
       }
 
       if (board[index] === currentPlayer) {
-        return { ...prev, selectedCell: index };
+        return { ...prev, selectedNode: index };
       }
 
-      return { ...prev, selectedCell: null };
+      return { ...prev, selectedNode: null };
     });
-  };
+  }, []);
 
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     setGameState(createInitialState());
-  };
-
-  const getValidMovesForPlayer = (board: GameState['board'], player: GameState['currentPlayer'], fromCell: number) => {
-    const piece = board[fromCell];
-    if (piece !== player) return [];
-    
-    const adjacent: Record<number, number[]> = {
-      0: [1, 3, 4],
-      1: [0, 2, 3, 4, 5],
-      2: [1, 4, 5],
-      3: [0, 1, 4, 6, 7],
-      4: [0, 1, 2, 3, 5, 6, 7, 8],
-      5: [1, 2, 4, 7, 8],
-      6: [3, 4, 7],
-      7: [3, 4, 5, 6, 8],
-      8: [4, 5, 7],
-    };
-    
-    return adjacent[fromCell]?.filter(idx => board[idx] === null) || [];
-  };
+  }, []);
 
   const { currentPlayer, winner } = gameState;
+  const draw = !winner && isDraw(gameState.board);
+
+  const playerColor = currentPlayer === 'Black' ? '#60a5fa' : '#f87171';
+  const playerName = currentPlayer === 'Black' ? 'Blue' : 'Red';
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 md:py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <header className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2">Strike 3</h1>
-          <p className="text-gray-600 text-lg">Tactical 3×3 Movement Game</p>
-        </header>
-
-        <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-          <div className="mb-6">
-            {winner ? (
-              <div className="text-center">
-                <p className="text-2xl md:text-3xl font-bold text-green-600 mb-2">
-                  Player {winner} Wins!
-                </p>
-                <button
-                  onClick={handleRestart}
-                  className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                  Restart Game
-                </button>
-              </div>
-            ) : (
-              <p className="text-center text-xl md:text-2xl font-semibold text-gray-700">
-                Player <span className={currentPlayer === 'Black' ? 'text-black' : 'text-gray-600'}>{currentPlayer}</span>'s Turn
-              </p>
-            )}
-          </div>
-
-          <Board gameState={gameState} onCellClick={handleCellClick} />
-
-          <div className="mt-6 text-center text-sm text-gray-500">
-            <p>Click your piece to select (turns yellow)</p>
-            <p>Valid moves highlight in green</p>
-            <p className="mt-2">Win: Diagonal, Middle Row, or Middle Column</p>
-          </div>
+    <div className="app-container">
+      <header className="app-header">
+        <h1 className="app-title">Strike 3</h1>
+        <div 
+          className="turn-indicator"
+          style={{ color: playerColor }}
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {winner 
+            ? `Player ${winner === 'Black' ? 'Blue' : 'Red'} Wins!` 
+            : draw 
+              ? "Draw" 
+              : `Player ${playerName}'s Turn`}
         </div>
+      </header>
+
+      <main className="app-main">
+        <BoardSVG 
+          gameState={gameState} 
+          onNodeClick={handleNodeClick} 
+          reducedMotion={reducedMotion}
+        />
+      </main>
+
+      <footer className="app-footer">
+        <button
+          onClick={handleRestart}
+          className="restart-button"
+          aria-label="Restart game"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+          <span>Restart</span>
+        </button>
+      </footer>
+
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {winner 
+          ? `Player ${winner === 'Black' ? 'Blue' : 'Red'} wins the game.`
+          : draw 
+            ? "Game ended in a draw."
+            : `Player ${playerName}'s turn. Select a piece to move.`}
       </div>
     </div>
   );
