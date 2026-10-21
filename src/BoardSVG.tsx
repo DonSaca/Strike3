@@ -1,14 +1,16 @@
 import { GameState } from './gameLogic';
-import { NODE_POSITIONS, CONNECTIONS, BOARD_WIDTH, BOARD_HEIGHT, TOKEN_RADIUS, getConnectedNodes } from './boardGeometry';
+import { CONNECTIONS, BOARD_WIDTH, BOARD_HEIGHT, TOKEN_RADIUS, getConnectedNodes, Position } from './boardGeometry';
 import { Token } from './Token';
 
 interface BoardSVGProps {
   gameState: GameState;
   onNodeClick: (index: number) => void;
   reducedMotion: boolean;
+  lastMove: { from: number; to: number } | null;
+  nodePositions: Position[];
 }
 
-export function BoardSVG({ gameState, onNodeClick, reducedMotion }: BoardSVGProps) {
+export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, nodePositions }: BoardSVGProps) {
   const { board, selectedNode, winningNodes, currentPlayer } = gameState;
 
   const validMoves = selectedNode !== null
@@ -96,8 +98,8 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion }: BoardSVGProp
 
         <g className="connections" filter="url(#connectionGlow)">
           {CONNECTIONS.map((conn, idx) => {
-            const start = NODE_POSITIONS[conn.from];
-            const end = NODE_POSITIONS[conn.to];
+            const start = nodePositions[conn.from];
+            const end = nodePositions[conn.to];
             const isWinningConnection = winningNodes.includes(conn.from) && winningNodes.includes(conn.to);
             const isValidMoveConnection = selectedNode !== null && 
               ((conn.from === selectedNode && validMoves.includes(conn.to)) ||
@@ -141,12 +143,15 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion }: BoardSVGProp
         </g>
 
         <g className="nodes">
-          {NODE_POSITIONS.map((pos, idx) => {
+          {nodePositions.map((pos, idx) => {
             const isOccupied = board[idx] !== null;
             const isSelected = selectedNode === idx;
             const isValidMove = validMoves.includes(idx);
             const isWinning = winningNodes.includes(idx);
             const nodeValue = board[idx];
+            
+            // Check if this token was just moved (animate from lastMove.from to lastMove.to)
+            const animateFrom = lastMove && lastMove.to === idx ? nodePositions[lastMove.from] : null;
             
             let nodeFill = 'rgba(255,255,255,0.04)';
             let nodeStroke = 'rgba(255,255,255,0.1)';
@@ -194,7 +199,7 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion }: BoardSVGProp
                     isValidMove={false}
                     isWinning={isWinning}
                     onClick={() => onNodeClick(idx)}
-                    animateFrom={null}
+                    animateFrom={animateFrom}
                     reducedMotion={reducedMotion}
                   />
                 )}

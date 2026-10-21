@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { GameState, createInitialState, makeMove, isDraw } from './gameLogic';
 import { BoardSVG } from './BoardSVG';
+import { NODE_POSITIONS } from './boardGeometry';
 
 function App() {
   const [gameState, setGameState] = useState<GameState>(createInitialState);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [lastMove, setLastMove] = useState<{ from: number; to: number } | null>(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -33,6 +35,7 @@ function App() {
 
       const newState = makeMove(prev, selectedNode, index);
       if (newState) {
+        setLastMove({ from: selectedNode, to: index });
         return newState;
       }
 
@@ -46,6 +49,7 @@ function App() {
 
   const handleRestart = useCallback(() => {
     setGameState(createInitialState());
+    setLastMove(null);
   }, []);
 
   const { currentPlayer, winner } = gameState;
@@ -77,6 +81,8 @@ function App() {
           gameState={gameState} 
           onNodeClick={handleNodeClick} 
           reducedMotion={reducedMotion}
+          lastMove={lastMove}
+          nodePositions={NODE_POSITIONS}
         />
       </main>
 
