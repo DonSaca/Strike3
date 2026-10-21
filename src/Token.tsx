@@ -44,12 +44,12 @@ export function Token({
   }, [position, animateFrom, hasAnimated, reducedMotion]);
 
   const gradients = {
-    Black: `url(#tokenGradientBlue)`,
+    Black: `url(#tokenGradientGreen)`,
     White: `url(#tokenGradientRed)`,
   };
 
   const highlightGradients = {
-    Black: `url(#tokenHighlightBlue)`,
+    Black: `url(#tokenHighlightGreen)`,
     White: `url(#tokenHighlightRed)`,
   };
 
@@ -75,11 +75,11 @@ export function Token({
   return (
     <g style={style} onClick={onClick}>
       <defs>
-        <radialGradient id={`tokenGradientBlue`} cx="35%" cy="35%" r="70%">
-          <stop offset="0%" stopColor="#60a5fa" />
-          <stop offset="40%" stopColor="#3b82f6" />
-          <stop offset="70%" stopColor="#1e40af" />
-          <stop offset="100%" stopColor="#1e3a8a" />
+        <radialGradient id={`tokenGradientGreen`} cx="35%" cy="35%" r="70%">
+          <stop offset="0%" stopColor="#4ade80" />
+          <stop offset="40%" stopColor="#22c55e" />
+          <stop offset="70%" stopColor="#166534" />
+          <stop offset="100%" stopColor="#14532d" />
         </radialGradient>
         <radialGradient id={`tokenGradientRed`} cx="35%" cy="35%" r="70%">
           <stop offset="0%" stopColor="#fca5a5" />
@@ -87,10 +87,10 @@ export function Token({
           <stop offset="70%" stopColor="#b91c1c" />
           <stop offset="100%" stopColor="#7f1d1d" />
         </radialGradient>
-        <radialGradient id={`tokenHighlightBlue`} cx="30%" cy="30%" r="80%">
-          <stop offset="0%" stopColor="#93c5fd" stopOpacity="0.9" />
-          <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#1e40af" stopOpacity="0" />
+        <radialGradient id={`tokenHighlightGreen`} cx="30%" cy="30%" r="80%">
+          <stop offset="0%" stopColor="#86efac" stopOpacity="0.9" />
+          <stop offset="50%" stopColor="#22c55e" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#166534" stopOpacity="0" />
         </radialGradient>
         <radialGradient id={`tokenHighlightRed`} cx="30%" cy="30%" r="80%">
           <stop offset="0%" stopColor="#fecaca" stopOpacity="0.9" />

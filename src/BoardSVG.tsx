@@ -56,9 +56,9 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
             </feMerge>
           </filter>
           
-          <radialGradient id="centerGlowBlue" cx="50%" cy="30%" r="60%">
-            <stop offset="0%" stopColor="rgba(59, 130, 246, 0.15)" />
-            <stop offset="100%" stopColor="rgba(30, 58, 138, 0)" />
+          <radialGradient id="centerGlowGreen" cx="50%" cy="30%" r="60%">
+            <stop offset="0%" stopColor="rgba(34, 197, 94, 0.15)" />
+            <stop offset="100%" stopColor="rgba(22, 101, 52, 0)" />
           </radialGradient>
           
           <radialGradient id="centerGlowRed" cx="50%" cy="70%" r="60%">
@@ -87,7 +87,7 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
           height={BOARD_HEIGHT - 32}
           rx={0}
           ry={0}
-          fill="url(#centerGlowBlue)"
+          fill="url(#centerGlowGreen)"
           pointerEvents="none"
         />
         

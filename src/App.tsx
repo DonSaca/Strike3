@@ -55,8 +55,8 @@ function App() {
   const { currentPlayer, winner } = gameState;
   const draw = !winner && isDraw(gameState.board);
 
-  const playerColor = currentPlayer === 'Black' ? '#60a5fa' : '#f87171';
-  const playerName = currentPlayer === 'Black' ? 'Blue' : 'Red';
+  const playerColor = currentPlayer === 'Black' ? '#22c55e' : '#f87171';
+  const playerName = currentPlayer === 'Black' ? 'Green' : 'Red';
 
   return (
     <div className="app-container">
@@ -69,7 +69,7 @@ function App() {
           aria-atomic="true"
         >
           {winner 
-            ? `Player ${winner === 'Black' ? 'Blue' : 'Red'} Wins!` 
+            ? `Player ${winner === 'Black' ? 'Green' : 'Red'} Wins!` 
             : draw 
               ? "Draw" 
               : `Player ${playerName}'s Turn`}
@@ -102,7 +102,7 @@ function App() {
 
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {winner 
-          ? `Player ${winner === 'Black' ? 'Blue' : 'Red'} wins the game.`
+          ? `Player ${winner === 'Black' ? 'Green' : 'Red'} wins the game.`
           : draw 
             ? "Game ended in a draw."
             : `Player ${playerName}'s turn. Select a piece to move.`}
