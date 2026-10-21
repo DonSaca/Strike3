@@ -1,6 +1,6 @@
 # Strike3
 
-A tactical board game built with React, TypeScript, and Vite. Based on the classic "Three Men's Morris" / "Nine Holes" game with a distinctive Strike3 victory condition.
+A tactical board game built with React, TypeScript, and Vite. Similar to the classic "Three Men's Morris" / "Nine Holes" game with a distinctive Strike3 victory condition.
 
 ## Game Overview
 
