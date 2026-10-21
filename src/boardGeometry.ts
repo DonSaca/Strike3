@@ -1,3 +1,5 @@
+import { Player } from './gameLogic';
+
 export interface Position {
   x: number;
   y: number;
@@ -81,4 +83,52 @@ export function getTokenStartPosition(player: 'Black' | 'White', tokenIndex: num
     const bottomPositions = [6, 7, 8];
     return NODE_POSITIONS[bottomPositions[tokenIndex]];
   }
+}
+
+export const TWO_STEP_MOVES: Record<number, { to: number; via: number }[]> = {
+  0: [
+    { to: 2, via: 1 },  // horizontal top
+    { to: 6, via: 3 },  // vertical left
+    { to: 8, via: 4 },  // diagonal TL-BR
+  ],
+  1: [
+    { to: 7, via: 4 },  // vertical center
+  ],
+  2: [
+    { to: 0, via: 1 },  // horizontal top
+    { to: 8, via: 5 },  // vertical right
+    { to: 6, via: 4 },  // diagonal TR-BL
+  ],
+  3: [
+    { to: 5, via: 4 },  // horizontal middle
+  ],
+  4: [],
+  5: [
+    { to: 3, via: 4 },  // horizontal middle
+  ],
+  6: [
+    { to: 0, via: 3 },  // vertical left
+    { to: 8, via: 7 },  // horizontal bottom
+    { to: 2, via: 4 },  // diagonal TR-BL
+  ],
+  7: [
+    { to: 1, via: 4 },  // vertical center
+  ],
+  8: [
+    { to: 6, via: 7 },  // horizontal bottom
+    { to: 2, via: 5 },  // vertical right
+    { to: 0, via: 4 },  // diagonal TL-BR
+  ],
+};
+
+export function getTwoStepMoves(from: number): { to: number; via: number }[] {
+  return TWO_STEP_MOVES[from] || [];
+}
+
+export function getAllValidMoves(board: (Player | null)[], from: number): number[] {
+  const oneStep = ADJACENCY[from]?.filter(idx => board[idx] === null) || [];
+  const twoStep = TWO_STEP_MOVES[from]?.filter(({ to, via }) => 
+    board[via] === null && board[to] === null
+  ).map(({ to }) => to) || [];
+  return [...oneStep, ...twoStep];
 }

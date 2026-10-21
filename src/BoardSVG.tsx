@@ -1,4 +1,4 @@
-import { GameState } from './gameLogic';
+import { GameState, getValidMoves } from './gameLogic';
 import { CONNECTIONS, BOARD_WIDTH, BOARD_HEIGHT, TOKEN_RADIUS, getConnectedNodes, Position } from './boardGeometry';
 import { Token } from './Token';
 
@@ -14,8 +14,14 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
   const { board, selectedNode, winningNodes, currentPlayer } = gameState;
 
   const validMoves = selectedNode !== null
+    ? getValidMoves(board, selectedNode, currentPlayer)
+    : [];
+  
+  const oneStepMoves = selectedNode !== null
     ? getConnectedNodes(selectedNode).filter(idx => board[idx] === null)
     : [];
+  
+  const twoStepMoves = validMoves.filter(m => !oneStepMoves.includes(m));
 
   return (
     <div className="flex justify-center" role="region" aria-label="Game board">
@@ -147,6 +153,7 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
             const isOccupied = board[idx] !== null;
             const isSelected = selectedNode === idx;
             const isValidMove = validMoves.includes(idx);
+            const isTwoStepMove = twoStepMoves.includes(idx);
             const isWinning = winningNodes.includes(idx);
             const nodeValue = board[idx];
             
@@ -166,9 +173,15 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
               nodeStroke = '#facc15';
               nodeStrokeWidth = 2;
             } else if (isValidMove) {
-              nodeFill = 'rgba(74, 222, 128, 0.15)';
-              nodeStroke = '#4ade80';
-              nodeStrokeWidth = 2;
+              if (isTwoStepMove) {
+                nodeFill = 'rgba(59, 130, 246, 0.15)';
+                nodeStroke = '#3b82f6';
+                nodeStrokeWidth = 2;
+              } else {
+                nodeFill = 'rgba(74, 222, 128, 0.15)';
+                nodeStroke = '#4ade80';
+                nodeStrokeWidth = 2;
+              }
             } else if (selectedNode !== null && getConnectedNodes(selectedNode).includes(idx)) {
               nodeFill = 'rgba(255,255,255,0.08)';
               nodeStroke = 'rgba(255,255,255,0.2)';
@@ -222,9 +235,9 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
                     cy={pos.y}
                     r={TOKEN_RADIUS * 0.55}
                     fill="none"
-                    stroke={isValidMove ? '#4ade80' : 'rgba(250, 204, 21, 0.6)'}
+                    stroke={isTwoStepMove ? '#3b82f6' : (isValidMove ? '#4ade80' : 'rgba(250, 204, 21, 0.6)')}
                     strokeWidth={2.5}
-                    strokeDasharray="6 4"
+                    strokeDasharray={isTwoStepMove ? '4 4' : '6 4'}
                     style={{
                       animation: reducedMotion ? 'none' : 'dashSpin 1.5s linear infinite',
                     }}

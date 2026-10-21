@@ -278,6 +278,164 @@ describe('gameLogic', () => {
       expect(moves).not.toContain(3);
       expect(moves).toEqual([4]);
     });
+
+    describe('two-step moves', () => {
+      it('allows Black to move two steps horizontally from 0 to 2 via empty 1', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = null;
+        board[2] = null;
+        const moves = getValidMoves(board, 0, 'Black');
+        expect(moves).toContain(2);
+      });
+
+      it('allows Black to move two steps vertically from 0 to 6 via empty 3', () => {
+        const board = [...INITIAL_BOARD];
+        board[3] = null;
+        board[6] = null;
+        const moves = getValidMoves(board, 0, 'Black');
+        expect(moves).toContain(6);
+      });
+
+      it('allows Black to move two steps diagonally from 0 to 8 via empty 4', () => {
+        const board = [...INITIAL_BOARD];
+        board[4] = null;
+        board[8] = null;
+        const moves = getValidMoves(board, 0, 'Black');
+        expect(moves).toContain(8);
+      });
+
+      it('allows White to move two steps horizontally from 8 to 6 via empty 7', () => {
+        const board = [...INITIAL_BOARD];
+        board[7] = null;
+        board[6] = null;
+        const moves = getValidMoves(board, 8, 'White');
+        expect(moves).toContain(6);
+      });
+
+      it('allows White to move two steps vertically from 8 to 2 via empty 5', () => {
+        const board = [...INITIAL_BOARD];
+        board[5] = null;
+        board[2] = null;
+        const moves = getValidMoves(board, 8, 'White');
+        expect(moves).toContain(2);
+      });
+
+      it('allows White to move two steps diagonally from 8 to 0 via empty 4', () => {
+        const board = [...INITIAL_BOARD];
+        board[4] = null;
+        board[0] = null;
+        const moves = getValidMoves(board, 8, 'White');
+        expect(moves).toContain(0);
+      });
+
+      it('allows two-step move from middle-left (3) to middle-right (5) via center (4)', () => {
+        const board = [...INITIAL_BOARD];
+        board[3] = 'Black';
+        board[0] = null;
+        board[4] = null;
+        board[5] = null;
+        const moves = getValidMoves(board, 3, 'Black');
+        expect(moves).toContain(5);
+      });
+
+      it('allows two-step move from middle-right (5) to middle-left (3) via center (4)', () => {
+        const board = [...INITIAL_BOARD];
+        board[5] = 'White';
+        board[8] = null;
+        board[4] = null;
+        board[3] = null;
+        const moves = getValidMoves(board, 5, 'White');
+        expect(moves).toContain(3);
+      });
+
+      it('allows two-step move from top-center (1) to bottom-center (7) via center (4)', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = 'Black';
+        board[0] = null;
+        board[4] = null;
+        board[7] = null;
+        const moves = getValidMoves(board, 1, 'Black');
+        expect(moves).toContain(7);
+      });
+
+      it('allows two-step move from bottom-center (7) to top-center (1) via center (4)', () => {
+        const board = [...INITIAL_BOARD];
+        board[7] = 'White';
+        board[6] = null;
+        board[4] = null;
+        board[1] = null;
+        const moves = getValidMoves(board, 7, 'White');
+        expect(moves).toContain(1);
+      });
+
+      it('allows two-step move from top-right (2) to bottom-left (6) via center (4)', () => {
+        const board = [...INITIAL_BOARD];
+        board[2] = 'Black';
+        board[4] = null;
+        board[6] = null;
+        const moves = getValidMoves(board, 2, 'Black');
+        expect(moves).toContain(6);
+      });
+
+      it('allows two-step move from bottom-left (6) to top-right (2) via center (4)', () => {
+        const board = [...INITIAL_BOARD];
+        board[6] = 'White';
+        board[4] = null;
+        board[2] = null;
+        const moves = getValidMoves(board, 6, 'White');
+        expect(moves).toContain(2);
+      });
+
+      it('blocks two-step move when intermediate node is occupied by own piece', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = 'Black'; // intermediate occupied by own piece
+        board[2] = null;    // destination empty
+        const moves = getValidMoves(board, 0, 'Black');
+        expect(moves).not.toContain(2);
+      });
+
+      it('blocks two-step move when intermediate node is occupied by opponent piece', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = 'White'; // intermediate occupied by opponent
+        board[2] = null;    // destination empty
+        const moves = getValidMoves(board, 0, 'Black');
+        expect(moves).not.toContain(2);
+      });
+
+      it('blocks two-step move when destination is occupied by own piece', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = null;    // intermediate empty
+        board[2] = 'Black'; // destination occupied by own piece
+        const moves = getValidMoves(board, 0, 'Black');
+        expect(moves).not.toContain(2);
+      });
+
+      it('blocks two-step move when destination is occupied by opponent piece', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = null;    // intermediate empty
+        board[2] = 'White'; // destination occupied by opponent
+        const moves = getValidMoves(board, 0, 'Black');
+        expect(moves).not.toContain(2);
+      });
+
+      it('does not allow two-step move through non-straight-line path', () => {
+        // 0 to 5 is not a valid two-step straight line (would be 0-4-5 or 0-1-5, neither straight)
+        const board = [...INITIAL_BOARD];
+        board[4] = null;
+        board[5] = null;
+        const moves = getValidMoves(board, 0, 'Black');
+        expect(moves).not.toContain(5);
+      });
+
+      it('includes both one-step and two-step moves when both available', () => {
+        const board = [...INITIAL_BOARD];
+        board[3] = null;
+        board[6] = null;
+        const moves = getValidMoves(board, 0, 'Black');
+        // one-step: 3, 4; two-step: 6
+        expect(moves.sort()).toEqual([3, 4, 6].sort());
+      });
+    });
   });
 
   describe('createInitialState', () => {
@@ -330,31 +488,211 @@ describe('gameLogic', () => {
       expect(newState).toBeNull();
     });
 
-    it('detects win after move', () => {
-      const board = [...INITIAL_BOARD];
-      board[4] = 'Black';
-      board[8] = 'Black';
-      board[0] = null;
-      board[1] = 'Black';
-      board[2] = null;
-      board[6] = null;
-      const state: GameState = {
-        board,
-        currentPlayer: 'Black',
-        selectedNode: 1,
-        winner: null,
-        winningNodes: [],
-      };
-      const newState = makeMove(state, 1, 0);
-      expect(newState).not.toBeNull();
-      expect(newState!.winner).toBe('Black');
-      expect(newState!.winningNodes).toEqual([0, 4, 8]);
-    });
+    describe('two-step moves', () => {
+      it('allows Black to make two-step horizontal move from 0 to 2', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = null;
+        board[2] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 0,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 0, 2);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[2]).toBe('Black');
+        expect(newState!.board[0]).toBeNull();
+        expect(newState!.currentPlayer).toBe('White');
+      });
 
-    it('returns null for move from empty cell', () => {
-      const state = createInitialState();
-      const newState = makeMove(state, 4, 3);
-      expect(newState).toBeNull();
+      it('allows White to make two-step horizontal move from 8 to 6', () => {
+        const board = [...INITIAL_BOARD];
+        board[7] = null;
+        board[6] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'White',
+          selectedNode: 8,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 8, 6);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[6]).toBe('White');
+        expect(newState!.board[8]).toBeNull();
+        expect(newState!.currentPlayer).toBe('Black');
+      });
+
+      it('allows Black to make two-step vertical move from 0 to 6', () => {
+        const board = [...INITIAL_BOARD];
+        board[3] = null;
+        board[6] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 0,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 0, 6);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[6]).toBe('Black');
+        expect(newState!.board[0]).toBeNull();
+      });
+
+      it('allows White to make two-step vertical move from 8 to 2', () => {
+        const board = [...INITIAL_BOARD];
+        board[5] = null;
+        board[2] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'White',
+          selectedNode: 8,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 8, 2);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[2]).toBe('White');
+        expect(newState!.board[8]).toBeNull();
+      });
+
+      it('allows Black to make two-step diagonal move from 0 to 8', () => {
+        const board = [...INITIAL_BOARD];
+        board[4] = null;
+        board[8] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 0,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 0, 8);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[8]).toBe('Black');
+        expect(newState!.board[0]).toBeNull();
+      });
+
+      it('allows White to make two-step diagonal move from 8 to 0', () => {
+        const board = [...INITIAL_BOARD];
+        board[4] = null;
+        board[0] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'White',
+          selectedNode: 8,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 8, 0);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[0]).toBe('White');
+        expect(newState!.board[8]).toBeNull();
+      });
+
+      it('allows two-step move from middle-left (3) to middle-right (5) via center', () => {
+        const board = [...INITIAL_BOARD];
+        board[3] = 'Black';
+        board[0] = null;
+        board[4] = null;
+        board[5] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 3,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 3, 5);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[5]).toBe('Black');
+        expect(newState!.board[3]).toBeNull();
+      });
+
+      it('allows two-step move from top-center (1) to bottom-center (7) via center', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = 'Black';
+        board[0] = null;
+        board[4] = null;
+        board[7] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 1,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 1, 7);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[7]).toBe('Black');
+        expect(newState!.board[1]).toBeNull();
+      });
+
+      it('allows two-step move from top-right (2) to bottom-left (6) via center', () => {
+        const board = [...INITIAL_BOARD];
+        board[2] = 'Black';
+        board[4] = null;
+        board[6] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 2,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 2, 6);
+        expect(newState).not.toBeNull();
+        expect(newState!.board[6]).toBe('Black');
+        expect(newState!.board[2]).toBeNull();
+      });
+
+      it('blocks two-step move when intermediate node is occupied', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = 'White'; // intermediate occupied
+        board[2] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 0,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 0, 2);
+        expect(newState).toBeNull();
+      });
+
+      it('blocks two-step move when destination is occupied', () => {
+        const board = [...INITIAL_BOARD];
+        board[1] = null;
+        board[2] = 'White'; // destination occupied
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 0,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 0, 2);
+        expect(newState).toBeNull();
+      });
+
+      it('does not allow non-straight-line two-step move', () => {
+        const board = [...INITIAL_BOARD];
+        board[4] = null;
+        board[5] = null;
+        const state: GameState = {
+          board,
+          currentPlayer: 'Black',
+          selectedNode: 0,
+          winner: null,
+          winningNodes: [],
+        };
+        const newState = makeMove(state, 0, 5);
+        expect(newState).toBeNull();
+      });
     });
   });
 

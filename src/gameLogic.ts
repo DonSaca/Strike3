@@ -1,4 +1,4 @@
-import { ADJACENCY } from './boardGeometry';
+import { getAllValidMoves } from './boardGeometry';
 
 export type Player = 'Black' | 'White';
 export type CellValue = Player | null;
@@ -38,7 +38,7 @@ export function getValidMoves(board: CellValue[], nodeIndex: number, player: Pla
   const piece = board[nodeIndex];
   if (piece !== player) return [];
   
-  return ADJACENCY[nodeIndex]?.filter(idx => board[idx] === null) || [];
+  return getAllValidMoves(board, nodeIndex);
 }
 
 export function createInitialState(): GameState {
@@ -56,7 +56,9 @@ export function makeMove(state: GameState, fromNode: number, toNode: number): Ga
   
   if (board[fromNode] !== currentPlayer) return null;
   if (board[toNode] !== null) return null;
-  if (!ADJACENCY[fromNode]?.includes(toNode)) return null;
+  
+  const validMoves = getAllValidMoves(board, fromNode);
+  if (!validMoves.includes(toNode)) return null;
   
   const newBoard = [...board];
   newBoard[toNode] = currentPlayer;
