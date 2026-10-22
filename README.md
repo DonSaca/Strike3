@@ -80,6 +80,30 @@ A player wins **only** when their three pieces occupy one of these four lines th
 - Left column (1–4–7)
 - Right column (3–6–9)
 
+## Game Modes
+
+- **Over the Board:** Two-player local game with selectable first player.
+- **Play vs Computer:** Single-player against the AI with selectable difficulty (Easy / Medium / Hard) and AI color.
+
+## First-Player Selection
+
+Before starting a game, choose:
+- **Coin Toss:** Random equal-probability selection.
+- **Green Starts:** Black starts.
+- **Red Starts:** White starts.
+
+The selection is preserved when restarting the same session.
+
+## AI Difficulty
+
+- **Easy:** Random legal move.
+- **Medium:** Minimax depth ~3.
+- **Hard:** Alpha-beta pruning, depth ~5.
+
+## Themes
+
+Select from **Classic**, **Dark**, or **High Contrast** in Settings. Theme is saved to `localStorage` and applied immediately.
+
 ## Getting Started
 
 ```bash
@@ -103,12 +127,17 @@ npm run lint
 
 ```
 src/
-├── App.tsx              # Main app component
+├── App.tsx              # Main app with menu, setup, game, settings
 ├── BoardSVG.tsx         # SVG board rendering
 ├── Token.tsx            # Animated piece component
 ├── gameLogic.ts         # Game logic & victory detection
 ├── boardGeometry.ts     # Board topology & geometry
 ├── gameLogic.test.ts    # Unit tests
+├── ai.ts                # Computer opponent
+├── themes.ts            # Theme definitions
+├── themeContext.tsx     # Theme provider
+├── ai.test.ts           # AI tests
+├── setup.test.ts        # Setup tests
 ├── main.tsx             # Entry point
 └── index.css            # Global styles (Tailwind)
 ```

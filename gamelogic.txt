@@ -206,3 +206,15 @@ Non-winning (even with 3 pieces):
   Blue at 3, 6, 9  → NO WIN (right column)
 
 Same rules apply to Red player.
+
+STARTING PLAYER
+---------------
+The game can start with either Black (Green) or White (Red). A coin-toss option selects randomly with equal probability. The initial turn is set by `createInitialState(startingPlayer)` and is preserved for restarts unless a new setup is performed.
+
+COMPUTER OPPONENT
+-----------------
+The AI uses minimax with alpha-beta pruning. Difficulty levels: Easy (random legal move), Medium (depth ~3), Hard (depth ~5 with pruning). The evaluation respects only the four center-dependent winning lines. The AI never mutates the live state and cancels pending actions when the game resets.
+
+THEMING
+-------
+Themes are defined in `src/themes.ts` and applied via CSS custom properties. Classic, Dark, and High Contrast are provided. The selected theme is persisted in `localStorage`.

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Position } from './boardGeometry';
+import { useTheme } from './themeContext';
 
 interface TokenProps {
   player: 'Black' | 'White';
@@ -27,6 +28,7 @@ export function Token({
   animateFrom = null,
   reducedMotion = false,
 }: TokenProps) {
+  useTheme();
   const [animatedPosition, setAnimatedPosition] = useState<Position>(position);
   const [hasAnimated, setHasAnimated] = useState(false);
 
@@ -44,12 +46,12 @@ export function Token({
   }, [position, animateFrom, hasAnimated, reducedMotion]);
 
   const gradients = {
-    Black: `url(#tokenGradientGreen)`,
+    Black: `url(#tokenGradientBlue)`,
     White: `url(#tokenGradientRed)`,
   };
 
   const highlightGradients = {
-    Black: `url(#tokenHighlightGreen)`,
+    Black: `url(#tokenHighlightBlue)`,
     White: `url(#tokenHighlightRed)`,
   };
 
@@ -62,7 +64,7 @@ export function Token({
     filter = 'drop-shadow(0 4px 12px rgba(0,0,0,0.5)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))';
   }
 
-  const strokeColor = isWinning ? '#22c55e' : (isSelected ? '#facc15' : (isValidMove ? '#4ade80' : 'rgba(255,255,255,0.3)'));
+  const strokeColor = isWinning ? 'var(--theme-accent-green)' : (isSelected ? 'var(--theme-accent-gold)' : (isValidMove ? 'var(--theme-accent-green)' : 'rgba(255,255,255,0.3)'));
   const strokeWidth = isWinning || isSelected || isValidMove ? 3 : 1.5;
 
   const style: React.CSSProperties = {
@@ -75,27 +77,27 @@ export function Token({
   return (
     <g style={style} onClick={onClick}>
       <defs>
-        <radialGradient id={`tokenGradientGreen`} cx="35%" cy="35%" r="70%">
-          <stop offset="0%" stopColor="#4ade80" />
-          <stop offset="40%" stopColor="#22c55e" />
-          <stop offset="70%" stopColor="#166534" />
-          <stop offset="100%" stopColor="#14532d" />
+        <radialGradient id={`tokenGradientBlue`} cx="35%" cy="35%" r="70%">
+          <stop offset="0%" style={{ stopColor: 'var(--theme-black-start)' }} />
+          <stop offset="40%" style={{ stopColor: 'var(--theme-black-start)' }} stopOpacity="0.85" />
+          <stop offset="70%" style={{ stopColor: 'var(--theme-black-end)' }} />
+          <stop offset="100%" style={{ stopColor: 'var(--theme-black-end)' }} />
         </radialGradient>
         <radialGradient id={`tokenGradientRed`} cx="35%" cy="35%" r="70%">
-          <stop offset="0%" stopColor="#fca5a5" />
-          <stop offset="40%" stopColor="#ef4444" />
-          <stop offset="70%" stopColor="#b91c1c" />
-          <stop offset="100%" stopColor="#7f1d1d" />
+          <stop offset="0%" style={{ stopColor: 'var(--theme-white-start)' }} />
+          <stop offset="40%" style={{ stopColor: 'var(--theme-white-start)' }} stopOpacity="0.85" />
+          <stop offset="70%" style={{ stopColor: 'var(--theme-white-end)' }} />
+          <stop offset="100%" style={{ stopColor: 'var(--theme-white-end)' }} />
         </radialGradient>
-        <radialGradient id={`tokenHighlightGreen`} cx="30%" cy="30%" r="80%">
-          <stop offset="0%" stopColor="#86efac" stopOpacity="0.9" />
-          <stop offset="50%" stopColor="#22c55e" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#166534" stopOpacity="0" />
+        <radialGradient id={`tokenHighlightBlue`} cx="30%" cy="30%" r="80%">
+          <stop offset="0%" style={{ stopColor: 'var(--theme-black-hl-start)' }} stopOpacity="0.9" />
+          <stop offset="50%" style={{ stopColor: 'var(--theme-black-hl-start)' }} stopOpacity="0.4" />
+          <stop offset="100%" style={{ stopColor: 'var(--theme-black-hl-end)' }} stopOpacity="0" />
         </radialGradient>
         <radialGradient id={`tokenHighlightRed`} cx="30%" cy="30%" r="80%">
-          <stop offset="0%" stopColor="#fecaca" stopOpacity="0.9" />
-          <stop offset="50%" stopColor="#ef4444" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#7f1d1d" stopOpacity="0" />
+          <stop offset="0%" style={{ stopColor: 'var(--theme-white-hl-start)' }} stopOpacity="0.9" />
+          <stop offset="50%" style={{ stopColor: 'var(--theme-white-hl-start)' }} stopOpacity="0.4" />
+          <stop offset="100%" style={{ stopColor: 'var(--theme-white-hl-end)' }} stopOpacity="0" />
         </radialGradient>
       </defs>
       

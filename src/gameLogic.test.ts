@@ -149,7 +149,7 @@ describe('boardGeometry', () => {
       expect(ADJACENCY[4]).toEqual(expect.arrayContaining([0, 1, 2, 3, 5, 6, 7, 8])); // node 5 (center)
       expect(ADJACENCY[5]).toEqual(expect.arrayContaining([2, 4, 8]));    // node 6
       expect(ADJACENCY[6]).toEqual(expect.arrayContaining([3, 4, 7]));    // node 7
-      expect(ADJACENCY[7]).toEqual(expect.arrayContaining([1, 4, 6, 8])); // node 8
+      expect(ADJACENCY[7]).toEqual(expect.arrayContaining([4, 6, 8])); // node 8
       expect(ADJACENCY[8]).toEqual(expect.arrayContaining([4, 5, 7]));    // node 9
     });
 

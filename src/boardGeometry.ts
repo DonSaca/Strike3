@@ -56,13 +56,13 @@ export const CONNECTIONS: Connection[] = [
 
 export const ADJACENCY: Record<number, number[]> = {
   0: [1, 3, 4],    // node 1: connects to 2, 4, 5
-  1: [0, 2, 4, 7],    // node 2: connects to 1, 3, 5, 8
+  1: [0, 2, 4],    // node 2: connects to 1, 3, 5
   2: [1, 4, 5],    // node 3: connects to 2, 5, 6
   3: [0, 4, 6],    // node 4: connects to 1, 5, 7
   4: [0, 1, 2, 3, 5, 6, 7, 8],  // node 5 (center): connects to all
   5: [2, 4, 8],    // node 6: connects to 3, 5, 9
   6: [3, 4, 7],    // node 7: connects to 4, 5, 8
-  7: [1, 4, 6, 8], // node 8: connects to 2, 5, 7, 9
+  7: [4, 6, 8], // node 8: connects to 5, 7, 9
   8: [4, 5, 7],    // node 9: connects to 5, 6, 8
 };
 

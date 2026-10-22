@@ -34,10 +34,10 @@ export function getValidMoves(board: CellValue[], nodeIndex: number, player: Pla
   return getAllValidMoves(board, nodeIndex);
 }
 
-export function createInitialState(): GameState {
+export function createInitialState(startingPlayer: Player = 'Black'): GameState {
   return {
     board: [...INITIAL_BOARD],
-    currentPlayer: 'Black',
+    currentPlayer: startingPlayer,
     selectedNode: null,
     winner: null,
     winningNodes: [],

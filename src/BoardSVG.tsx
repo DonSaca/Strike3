@@ -1,6 +1,7 @@
 import { GameState, getValidMoves } from './gameLogic';
 import { CONNECTIONS, BOARD_WIDTH, BOARD_HEIGHT, TOKEN_RADIUS, getConnectedNodes, Position } from './boardGeometry';
 import { Token } from './Token';
+import { useTheme } from './themeContext';
 
 interface BoardSVGProps {
   gameState: GameState;
@@ -11,6 +12,7 @@ interface BoardSVGProps {
 }
 
 export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, nodePositions }: BoardSVGProps) {
+  const { theme } = useTheme();
   const { board, selectedNode, winningNodes, currentPlayer } = gameState;
 
   const validMoves = selectedNode !== null
@@ -75,9 +77,10 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
           rx={0}
           ry={0}
           fill="url(#boardBgGradient)"
-          stroke="#2a2f3a"
+          stroke="var(--theme-board-lines)"
           strokeWidth={1.5}
           filter="url(#boardGlow)"
+          style={{ fill: theme === 'classic' ? 'url(#boardBgGradient)' : 'var(--theme-board-bg)' }}
         />
 
         <rect
@@ -116,11 +119,11 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
             let strokeDasharray = '4 6';
             
             if (isWinningConnection) {
-              strokeColor = '#22c55e';
+              strokeColor = 'var(--theme-accent-green)';
               strokeWidth = 3;
               strokeDasharray = 'none';
             } else if (isValidMoveConnection) {
-              strokeColor = '#4ade80';
+              strokeColor = 'var(--theme-accent-green)';
               strokeWidth = 2.5;
               strokeDasharray = 'none';
             } else if (selectedNode !== null && (conn.from === selectedNode || conn.to === selectedNode)) {
@@ -160,17 +163,17 @@ export function BoardSVG({ gameState, onNodeClick, reducedMotion, lastMove, node
             // Check if this token was just moved (animate from lastMove.from to lastMove.to)
             const animateFrom = lastMove && lastMove.to === idx ? nodePositions[lastMove.from] : null;
             
-            let nodeFill = 'rgba(255,255,255,0.04)';
-            let nodeStroke = 'rgba(255,255,255,0.1)';
+            let nodeFill = 'var(--theme-nodes-fill)';
+            let nodeStroke = 'var(--theme-nodes-stroke)';
             let nodeStrokeWidth = 1;
             
             if (isWinning) {
               nodeFill = 'rgba(34, 197, 94, 0.15)';
-              nodeStroke = '#22c55e';
+              nodeStroke = 'var(--theme-accent-green)';
               nodeStrokeWidth = 2;
             } else if (isSelected) {
               nodeFill = 'rgba(250, 204, 21, 0.15)';
-              nodeStroke = '#facc15';
+              nodeStroke = 'var(--theme-accent-gold)';
               nodeStrokeWidth = 2;
             } else if (isValidMove) {
               if (isTwoStepMove) {
